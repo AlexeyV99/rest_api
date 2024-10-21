@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Books:</h1>
+{% if books %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>
+                {{ book.id }}
+            </td>
+            <td>
+                {{ book.title }}
+            </td>
+            <td>
+                {{ book.author }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<h2>Такой книги нет!</h2>
+{% endif %}
+{% endblock %}

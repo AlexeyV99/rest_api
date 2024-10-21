@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+
+<h1>Добавление новой книги!</h1>
+<form action="/books" method="POST">
+    <div>
+        <lable>Название книги:<input type="text" name="field1" /></lable>
+    </div>
+    <div>
+        <lable>Имя автора:<input type="text" name="field1" /></lable>
+    </div>
+    <div>
+        <input type="submit" name="add new book" />
+    </div>
+</form>
+
+{% endblock %}
