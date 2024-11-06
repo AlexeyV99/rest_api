@@ -1,7 +1,7 @@
 from typing import Optional
-
-from marshmallow import Schema, fields, validates, post_load, pre_load, ValidationError
-from models import get_book_by_title, Book, Author, get_author_by_id, get_author_by_name
+from marshmallow import validates, post_load, pre_load
+from models import get_book_by_title, Book, Author, get_author_by_id, get_author_by_name, get_book_by_id
+from flasgger import Schema, ValidationError, fields
 
 
 class AuthorSchema(Schema):
@@ -43,10 +43,10 @@ class BookSchema(Schema):
     author = fields.Int(required=True)
     # author = fields.Nested(AuthorSchema(), required=True)
 
-    @validates('title')
-    def validate_title(self, title: str) -> None:
-        if get_book_by_title(title):
-            raise ValidationError('Книга с названием "{title}" уже существует'.format(title=title))
+    # @validates('title')
+    # def validate_title(self, title: str) -> None:
+    #     if get_book_by_title(title):
+    #         raise ValidationError("Книга с названием '{title}' уже существует".format(title=title))
 
     @validates('author')
     def validate_author(self, author: Optional[int]) -> None:
@@ -78,13 +78,6 @@ class BookSchema(Schema):
                                           f'сначала надо добавить его в таблицу авторов!')
         else:
             raise ValidationError(f'Неправильный тип данных автора')
-        # elif isinstance(data['author'], dict):
-            # schema_author = AuthorSchema()
-            # try:
-            #     author = schema_author.load(data['author'])
-            # except ValidationError as exc:
-            #     return exc.messages, 400
-            # data['author'] = Author(**data['author'])
         return data
 
     @post_load
@@ -95,16 +88,19 @@ class BookListSchema(Schema):
     id = fields.Int(dump_only=True)
     title = fields.Str(required=True)
     author = fields.Nested(AuthorSchema(), required=True)
-    book_id = fields.Int(dump_only=True)
+    # book_id = fields.Int(required=False)
 
-    @validates('book_id')
-    def book_id_val(self, book_id):
-        print(book_id)
+    # @validates('book_id')
+    # def validate_book_id(self, book_id: int) -> None:
+    #     print(book_id)
+    #     if not get_book_by_id(book_id):
+    #         raise ValidationError(f'Нет книги с таким id={book_id}')
 
-class BookEditSchema(Schema):
-    book_id = fields.Int(dump_only=True)
+# class BookEditSchema(Schema):
+#     id = fields.Int(required=True)
+#
+#     @validates('id')
+#     def validate_book_id(self, id: int) -> None:
+#         if not get_book_by_id(id):
+#             raise ValidationError(f'Нет книги с таким id={id}')
 
-
-        # if get_author_by_name(data):
-        #     raise ValidationError('Такой автор уже есть в базе')
-        # else:

@@ -1,9 +1,50 @@
 {
   "definitions": {
+    "Author": {
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "id": {
+          "readOnly": true,
+          "type": "integer"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "middle_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "first_name",
+        "last_name"
+      ],
+      "type": "object"
+    },
     "Book": {
       "properties": {
         "author": {
+          "type": "integer"
+        },
+        "id": {
+          "readOnly": true,
+          "type": "integer"
+        },
+        "title": {
           "type": "string"
+        }
+      },
+      "required": [
+        "author",
+        "title"
+      ],
+      "type": "object"
+    },
+    "BookList": {
+      "properties": {
+        "author": {
+          "$ref": "#/definitions/Author"
         },
         "id": {
           "readOnly": true,
@@ -25,6 +66,135 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/authors": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Author data",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Author"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "This is endpoint for obtaining the Authors list.",
+        "tags": [
+          "authors"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "new Author params",
+            "schema": {
+              "$ref": "#/definitions/Author"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The Author has been created",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Author"
+              }
+            }
+          },
+          "400": {
+            "description": "Error validation"
+          }
+        },
+        "summary": "This is endpoint for author creation.",
+        "tags": [
+          "authors"
+        ]
+      }
+    },
+    "/api/authors/{author_id}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "author_id",
+            "type": "int"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Good result"
+          },
+          "404": {
+            "description": "No such author"
+          }
+        },
+        "summary": "This is endpoint for delete the author.",
+        "tags": [
+          "authors"
+        ]
+      },
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "author_id",
+            "type": "int"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Author data",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Author"
+              }
+            }
+          },
+          "404": {
+            "description": "No such author"
+          }
+        },
+        "summary": "This is endpoint to obtain the author info.",
+        "tags": [
+          "authors"
+        ]
+      },
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "author_id",
+            "type": "int"
+          },
+          {
+            "in": "body",
+            "name": "new author params",
+            "schema": {
+              "$ref": "#/definitions/Author"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Author data",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Author"
+              }
+            }
+          },
+          "400": {
+            "description": "Error validation"
+          }
+        },
+        "summary": "This is endpoint to update the author info.",
+        "tags": [
+          "authors"
+        ]
+      }
+    },
     "/api/books": {
       "get": {
         "responses": {
@@ -32,7 +202,7 @@
             "description": "Books data",
             "schema": {
               "items": {
-                "$ref": "#/definitions/Book"
+                "$ref": "#/definitions/BookList"
               },
               "type": "array"
             }
@@ -58,12 +228,97 @@
             "description": "The book has been created",
             "schema": {
               "items": {
-                "$ref": "#/definitions/Book"
+                "$ref": "#/definitions/BookList"
               }
             }
+          },
+          "400": {
+            "description": "Error validation"
           }
         },
         "summary": "This is endpoint for book creation.",
+        "tags": [
+          "books"
+        ]
+      }
+    },
+    "/api/books/{book_id}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "type": "int"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Good result"
+          },
+          "404": {
+            "description": "No such book"
+          }
+        },
+        "summary": "This is endpoint to delete the book.",
+        "tags": [
+          "books"
+        ]
+      },
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "type": "int"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book data",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/BookList"
+              }
+            }
+          },
+          "404": {
+            "description": "No such book"
+          }
+        },
+        "summary": "This is endpoint to obtain the book info.",
+        "tags": [
+          "books"
+        ]
+      },
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "type": "int"
+          },
+          {
+            "in": "body",
+            "name": "new book params",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book data",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Book"
+              }
+            }
+          },
+          "400": {
+            "description": "Error validation"
+          }
+        },
+        "summary": "This is endpoint to update the book info.",
         "tags": [
           "books"
         ]

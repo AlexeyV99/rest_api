@@ -21,7 +21,6 @@ AUTHORS_TABLE_NAME = 'authors'
 
 @dataclass
 class Author:
-    # id: int
     first_name: str
     last_name: str
     middle_name: Optional[str] = None
@@ -33,7 +32,7 @@ class Author:
 @dataclass
 class Book:
     title: str
-    author: int = None
+    author: Union[int, Author] = None
     id: Optional[int] = None
 
     def __getitem__(self, item):
@@ -174,7 +173,7 @@ def delete_book_by_id(book_id):
         cursor = conn.cursor()
         cursor.execute(
             f"""
-            DELETE {BOOKS_TABLE_NAME}
+            DELETE FROM {BOOKS_TABLE_NAME}
             WHERE id = ?
             """, (book_id,)
         )
@@ -220,7 +219,27 @@ def get_author_by_id(auth_id: int) -> Optional[Author]:
         if author:
             return _get_author_obj_from_row(author)
 
+def delete_author_by_id(author_id):
+    with sqlite3.connect('table_books.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            DELETE FROM {AUTHORS_TABLE_NAME}
+            WHERE id = ?
+            """, (author_id,)
+        )
+        conn.commit()
 
-
-
-
+def update_author_by_id(author: Author):
+    with sqlite3.connect('table_books.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            UPDATE {AUTHORS_TABLE_NAME}
+            SET first_name = ?,
+                last_name = ?,
+                middle_name = ?
+            WHERE id = ?
+            """, (author.first_name, author.last_name, author.middle_name, author.id)
+        )
+        conn.commit()
